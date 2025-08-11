@@ -1,16 +1,16 @@
 import json
-from pathlib import Path
+import os
 
-DATA_FILE = Path('books.json')
+BOOKS_FILE = 'books.json'
 
 
 def load_books():
-    if not DATA_FILE.exists():
+    if not os.path.exists(BOOKS_FILE):
         return []
-    with open(DATA_FILE, 'r', encoding='utf-8') as f:
-        return json.load(f)
+    with open(BOOKS_FILE, 'r', encoding='utf-8') as file:
+        return json.load(file)
 
 
 def save_books(books):
-    with open(DATA_FILE, 'w', encoding='utf-8') as f:
-        json.dump(books, f, ensure_ascii=False, indent=4)
+    with open(BOOKS_FILE, 'w', encoding='utf-8') as file:
+        json.dump(books, file, indent=4, ensure_ascii=False)
