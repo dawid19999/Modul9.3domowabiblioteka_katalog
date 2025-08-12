@@ -1,8 +1,8 @@
 
-1. Przejdz do katalogu z aplikacją:
+1.Przejdz do katalogu z aplikacją:
 cd C:/Moduł9.3domowabiblioteka
 
-2. Włącz wirtualne środowisko:
+2.Włącz wirtualne środowisko:
 .\venv\Scripts\Activate
 
 3.Zainstaluj flask
@@ -12,6 +12,6 @@ pip install flask
 env:FLASK_APP = "app.py"
 env:FLASK_ENV = "development"
 
-5. Uruchomienie aplikacji
+5.Uruchomienie aplikacji
 flask run
 
