@@ -1,0 +1,34 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Domowa Biblioteka</title>
+</head>
+<body>
+    <h1>Lista książek</h1>
+    <ul>
+        {% for book in books %}
+            <li>
+                <strong>{{ book.title }}</strong> ({{ book.year }}) — {{ book.author }}  
+                — {{ book.pages }} stron
+                <form action="{{ url_for('delete_book', book_id=book.id) }}" method="POST" style="display:inline;">
+                    {{ delete_form.hidden_tag() }}
+                    <button type="submit">Usuń</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Dodaj książkę</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.title.label }} {{ form.title(size=40) }}<br>
+        {{ form.author.label }} {{ form.author(size=40) }}<br>
+        {{ form.year.label }} {{ form.year() }}<br>
+        {{ form.pages.label }} {{ form.pages() }}<br>
+        {{ form.description.label }} {{ form.description(rows=3, cols=40) }}<br>
+        <button type="submit">Dodaj</button>
+    </form>
+</body>
+</html>

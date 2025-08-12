@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "title": "Wiedźmin: Ostatnie życzenie",
+    "author": "Andrzej Sapkowski",
+    "year": 1993,
+    "pages": 288,
+    "description": "Zbiór opowiadań o wiedźminie Geralcie."
+  },
+  {
+    "id": "2",
+    "title": "Zbrodnia i kara",
+    "author": "Fiodor Dostojewski",
+    "year": 1866,
+    "pages": 671,
+    "description": "Klasyczna powieść o moralności, winie i odkupieniu."
+  },
+  {
+    "id": "3",
+    "title": "Mały Książę",
+    "author": "Antoine de Saint-Exupéry",
+    "year": 1943,
+    "pages": 96,
+    "description": "Filozoficzna opowieść o miłości, przyjaźni i stracie."
+  }
+]
