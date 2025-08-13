@@ -1,29 +1,9 @@
 
-from flask import Flask, render_template, redirect, url_for
-from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, TextAreaField
-from wtforms.validators import DataRequired, Length, NumberRange
-import uuid
+from flask import Flask, render_template, request, jsonify
 import json
 import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'super_secret_key'
-
-
-# Formularz dodawania książki
-class BookForm(FlaskForm):
-    title = StringField('Tytuł', validators=[DataRequired(), Length(min=1, max=100)])
-    author = StringField('Autor', validators=[DataRequired(), Length(min=1, max=100)])
-    year = IntegerField('Rok wydania', validators=[DataRequired(), NumberRange(min=0, max=2100)])
-    pages = IntegerField('Liczba stron', validators=[DataRequired(), NumberRange(min=1, max=10000)])
-    description = TextAreaField('Opis', validators=[Length(max=500)])
-
-
-# Formularz usuwania książki
-class DeleteForm(FlaskForm):
-    pass
-
 
 BOOKS_FILE = 'books.json'
 
@@ -40,36 +20,56 @@ def save_books(books):
         json.dump(books, f, ensure_ascii=False, indent=2)
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
     books = load_books()
-    form = BookForm()
-    delete_form = DeleteForm()
-
-    if form.validate_on_submit():
-        new_book = {
-            'id': str(uuid.uuid4()),
-            'title': form.title.data,
-            'author': form.author.data,
-            'year': form.year.data,
-            'pages': form.pages.data,
-            'description': form.description.data
-        }
-        books.append(new_book)
-        save_books(books)
-        return redirect(url_for('index'))
-
-    return render_template('index.html', books=books, form=form, delete_form=delete_form)
+    return render_template('index.html', books=books)
 
 
-@app.route('/delete/<book_id>', methods=['POST'])
-def delete_book(book_id):
-    form = DeleteForm()
-    if form.validate_on_submit():
-        books = load_books()
-        books = [b for b in books if str(b['id']) != book_id]
-        save_books(books)
-    return redirect(url_for('index'))
+# REST API
+@app.route('/api/books', methods=['GET'])
+def api_get_books():
+    return jsonify(load_books())
+
+
+@app.route('/api/books/<int:book_id>', methods=['GET'])
+def api_get_book(book_id):
+    books = load_books()
+    book = next((b for b in books if b['id'] == book_id), None)
+    if book:
+        return jsonify(book)
+    return jsonify({'error': 'Book not found'}), 404
+
+
+@app.route('/api/books', methods=['POST'])
+def api_add_book():
+    data = request.get_json()
+    if not data or 'title' not in data or 'author' not in data or 'year' not in data or 'pages' not in data:
+        return jsonify({'error': 'Invalid data'}), 400
+
+    books = load_books()
+    new_id = max([b['id'] for b in books], default=0) + 1
+    new_book = {
+        'id': new_id,
+        'title': data['title'],
+        'author': data['author'],
+        'year': data['year'],
+        'pages': f"{data['pages']} str",
+        'description': data.get('description', '')
+    }
+    books.append(new_book)
+    save_books(books)
+    return jsonify(new_book), 201
+
+
+@app.route('/api/books/<int:book_id>', methods=['DELETE'])
+def api_delete_book(book_id):
+    books = load_books()
+    new_books = [b for b in books if b['id'] != book_id]
+    if len(new_books) == len(books):
+        return jsonify({'error': 'Book not found'}), 404
+    save_books(new_books)
+    return jsonify({'message': 'Book deleted'}), 200
 
 
 if __name__ == '__main__':
