@@ -3,24 +3,35 @@
     "id": "1",
     "title": "Wiedźmin: Ostatnie życzenie",
     "author": "Andrzej Sapkowski",
-    "year": 1993,
-    "pages": 288,
+    "year": "1993 rok",
+    "pages": "288 str",
     "description": "Zbiór opowiadań o wiedźminie Geralcie."
   },
   {
-    "id": "2",
+    "id": 2,
     "title": "Zbrodnia i kara",
     "author": "Fiodor Dostojewski",
-    "year": 1866,
-    "pages": 671,
-    "description": "Klasyczna powieść o moralności, winie i odkupieniu."
+    "year": "1866 rok",
+    "genre": "Klasyka",
+    "pages": "576 str",
+    "description": ""
   },
   {
-    "id": "3",
+    "id": 3,
     "title": "Mały Książę",
     "author": "Antoine de Saint-Exupéry",
-    "year": 1943,
-    "pages": 96,
-    "description": "Filozoficzna opowieść o miłości, przyjaźni i stracie."
+    "year": "1943 rok",
+    "genre": "Baśń",
+    "pages": "96 str",
+    "description": ""
+  },
+  {
+    "id": 4,
+    "title": "Rok 1984",
+    "author": "George Orwell",
+    "year": "1949 rok",
+    "genre": "Fantastyka",
+    "pages": "328 str",
+    "description": ""
   }
 ]
