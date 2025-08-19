@@ -8,7 +8,12 @@
 <body>
     <h1>Domowa Biblioteka</h1>
 
-    <h2>Dodaj książkę</h2>
+    {% if editing_id %}
+        <h2>Edytuj książkę</h2>
+    {% else %}
+        <h2>Dodaj książkę</h2>
+    {% endif %}
+
     <form method="POST">
         {{ form.hidden_tag() }}
         {{ form.title.label }} {{ form.title() }}<br>
@@ -23,7 +28,8 @@
         {% for book in books %}
             <li>
                 <strong>{{ book.title }}</strong> - {{ book.author }} ({{ book.year }})
-                <form method="POST" action="{{ url_for('delete_book', book_id=book.id) }}" style="display:inline;">
+                <a href="{{ url_for('index', book_id=book['id']) }}">Edytuj</a>
+                <form method="POST" action="{{ url_for('delete_book', book_id=book['id']) }}" style="display:inline;">
                     {{ delete_form.hidden_tag() }}
                     {{ delete_form.submit() }}
                 </form>
@@ -34,4 +40,5 @@
     </ul>
 </body>
 </html>
+
 
