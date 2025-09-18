@@ -28,7 +28,7 @@
             list.innerHTML = '';
             books.forEach(book => {
                 const li = document.createElement('li');
-                li.innerHTML = `<strong>${book.title}</strong> - ${book.author} (${book.year}) | ${book.pages}
+                li.innerHTML = `${book.title} - ${book.author} (${book.year}) | ${book.pages}
                     <button onclick="deleteBook(${book.id})">Usuń</button>`;
                 list.appendChild(li);
             });
