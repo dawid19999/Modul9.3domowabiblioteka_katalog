@@ -5,13 +5,11 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, TextAreaField, SubmitField
 from wtforms.validators import DataRequired, Length, NumberRange
 import uuid
-import json
-import os
+from utils import load_books, save_books  # <- import zamiast duplikacji
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super_secret_key'
 
-BOOKS_FILE = 'books.json'
 
 class BookForm(FlaskForm):
     title = StringField('Tytuł', validators=[DataRequired(), Length(min=1, max=100)])
@@ -20,18 +18,10 @@ class BookForm(FlaskForm):
     description = TextAreaField('Opis', validators=[Length(max=500)])
     submit = SubmitField('Zapisz książkę')
 
+
 class DeleteForm(FlaskForm):
     submit = SubmitField('Usuń')
 
-def load_books():
-    if not os.path.exists(BOOKS_FILE):
-        return []
-    with open(BOOKS_FILE, 'r', encoding='utf-8') as f:
-        return json.load(f)
-
-def save_books(books):
-    with open(BOOKS_FILE, 'w', encoding='utf-8') as f:
-        json.dump(books, f, ensure_ascii=False, indent=2)
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/edit/<book_id>', methods=['GET', 'POST'])
@@ -49,24 +39,36 @@ def index(book_id=None):
 
     if form.validate_on_submit():
         if book_id:
+            
             book['title'] = form.title.data
             book['author'] = form.author.data
             book['year'] = form.year.data
             book['description'] = form.description.data
+            
         else:
+            
             new_book = {
                 'id': str(uuid.uuid4()),
                 'title': form.title.data,
                 'author': form.author.data,
                 'year': form.year.data,
-                'description': form.description.data
+                'description': form.description.data,
+                'genre': '',   
+                'pages': 0     
             }
             books.append(new_book)
 
         save_books(books)
         return redirect(url_for('index'))
 
-    return render_template('index.html', books=books, form=form, delete_form=delete_form, editing_id=book_id)
+    return render_template(
+        'index.html',
+        books=books,
+        form=form,
+        delete_form=delete_form,
+        editing_id=book_id
+    )
+
 
 @app.route('/delete/<book_id>', methods=['POST'])
 def delete_book(book_id):
@@ -74,6 +76,7 @@ def delete_book(book_id):
     books = [b for b in books if b['id'] != book_id]
     save_books(books)
     return redirect(url_for('index'))
+
 
 @app.route('/api/books/<book_id>', methods=['PUT'])
 def update_book_api(book_id):
@@ -89,6 +92,7 @@ def update_book_api(book_id):
     book['description'] = data.get('description', book['description'])
     save_books(books)
     return {"message": "Book updated", "book": book}, 200
+
 
 if __name__ == '__main__':
     app.run(debug=True)
