@@ -48,13 +48,13 @@ def index(book_id=None):
         else:
             
             new_book = {
-                'id': str(uuid.uuid4()),
+                'id': str(len(books) + 1),  
                 'title': form.title.data,
                 'author': form.author.data,
                 'year': form.year.data,
                 'description': form.description.data,
-                'genre': '',   
-                'pages': 0     
+                'genre': '',
+                'pages': 0      
             }
             books.append(new_book)
 
@@ -96,3 +96,4 @@ def update_book_api(book_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
