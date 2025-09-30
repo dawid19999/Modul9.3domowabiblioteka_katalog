@@ -1,5 +1,6 @@
 
 
+
 from flask import Flask, render_template, redirect, url_for, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, TextAreaField, SubmitField
@@ -46,15 +47,21 @@ def index(book_id=None):
             book['description'] = form.description.data
             
         else:
+             
+            if books:
+                new_id = str(max(int(b["id"]) for b in books) + 1)
             
+            else:
+                new_id = "1"
+
             new_book = {
-                'id': str(len(books) + 1),  
+                'id': new_id,  
                 'title': form.title.data,
                 'author': form.author.data,
                 'year': form.year.data,
                 'description': form.description.data,
                 'genre': '',
-                'pages': 0      
+                'pages': 0    
             }
             books.append(new_book)
 
@@ -96,4 +103,5 @@ def update_book_api(book_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
