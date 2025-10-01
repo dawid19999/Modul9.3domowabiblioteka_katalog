@@ -1,12 +1,9 @@
 
-
-
 from flask import Flask, render_template, redirect, url_for, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, TextAreaField, SubmitField
 from wtforms.validators import DataRequired, Length, NumberRange
-import uuid
-from utils import load_books, save_books  # <- import zamiast duplikacji
+from utils import load_books, save_books  # import zamiast duplikacji
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super_secret_key'
@@ -16,6 +13,8 @@ class BookForm(FlaskForm):
     title = StringField('Tytuł', validators=[DataRequired(), Length(min=1, max=100)])
     author = StringField('Autor', validators=[DataRequired(), Length(min=1, max=100)])
     year = IntegerField('Rok wydania', validators=[DataRequired(), NumberRange(min=0, max=2100)])
+    genre = StringField('Gatunek', validators=[Length(max=100)])
+    pages = IntegerField('Liczba stron', validators=[NumberRange(min=1, max=10000)])
     description = TextAreaField('Opis', validators=[Length(max=500)])
     submit = SubmitField('Zapisz książkę')
 
@@ -40,28 +39,26 @@ def index(book_id=None):
 
     if form.validate_on_submit():
         if book_id:
-            
             book['title'] = form.title.data
             book['author'] = form.author.data
             book['year'] = form.year.data
+            book['genre'] = form.genre.data
+            book['pages'] = form.pages.data
             book['description'] = form.description.data
-            
         else:
-             
             if books:
                 new_id = str(max(int(b["id"]) for b in books) + 1)
-            
             else:
                 new_id = "1"
 
             new_book = {
-                'id': new_id,  
+                'id': new_id,
                 'title': form.title.data,
                 'author': form.author.data,
                 'year': form.year.data,
-                'description': form.description.data,
-                'genre': '',
-                'pages': 0    
+                'genre': form.genre.data,
+                'pages': form.pages.data,
+                'description': form.description.data
             }
             books.append(new_book)
 
@@ -96,12 +93,13 @@ def update_book_api(book_id):
     book['title'] = data.get('title', book['title'])
     book['author'] = data.get('author', book['author'])
     book['year'] = data.get('year', book['year'])
+    book['genre'] = data.get('genre', book['genre'])
+    book['pages'] = data.get('pages', book['pages'])
     book['description'] = data.get('description', book['description'])
+
     save_books(books)
     return {"message": "Book updated", "book": book}, 200
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
