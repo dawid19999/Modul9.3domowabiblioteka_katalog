@@ -1,5 +1,4 @@
 
-
 <!doctype html>
 <html lang="pl">
 <head>
@@ -20,6 +19,8 @@
         {{ form.title.label }} {{ form.title() }}<br>
         {{ form.author.label }} {{ form.author() }}<br>
         {{ form.year.label }} {{ form.year() }}<br>
+        {{ form.genre.label }} {{ form.genre() }}<br>
+        {{ form.pages.label }} {{ form.pages() }}<br>
         {{ form.description.label }} {{ form.description() }}<br>
         {{ form.submit() }}
     </form>
@@ -28,7 +29,8 @@
     <ul>
         {% for book in books %}
             <li>
-                <strong>{{ book.title }}</strong> - {{ book.author }} ({{ book.year }})
+                <strong>{{ book.title }}</strong> - {{ book.author }} ({{ book.year }})<br>
+                Gatunek: {{ book.genre }} | Stron: {{ book.pages }}
                 {% if book.description %}
                     <p><em>{{ book.description }}</em></p>
                 {% endif %}
